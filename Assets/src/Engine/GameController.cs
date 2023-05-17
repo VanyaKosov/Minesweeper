@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Collections.Generic;
 
 public class GameController
@@ -7,7 +6,10 @@ public class GameController
     private const int MINE = -1;
 
     private readonly int[,] _fieldMap;
+
     private readonly FieldStatus[,] _fieldStatus;
+
+    public event EventHandler<OpenCellEventArgs> OnOpenCell;
 
     public GameController(int mines, int width, int height, int seed = 0)
     {
@@ -38,6 +40,29 @@ public class GameController
 
                 _fieldMap[pos.X, pos.Y]++;
             }
+        }
+    }
+
+    public void OpenCell(int x, int y)
+    {
+        if (_fieldStatus[x, y] != FieldStatus.Closed)
+        {
+            return;
+        }
+
+        _fieldStatus[x, y] = FieldStatus.Opened;
+
+        var args = new OpenCellEventArgs(x, y, _fieldMap[x, y]);
+        OnOpenCell?.Invoke(this, args);
+
+        if (_fieldMap[x, y] != 0)
+        {
+            return;
+        }
+
+        foreach (var pos in SurroundingCells(x, y))
+        {
+            OpenCell(pos.X, pos.Y);
         }
     }
 
