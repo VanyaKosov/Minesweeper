@@ -13,6 +13,8 @@ public class GameControllerTest
 
     private List<OpenCellEventArgs> _openCellEvents;
 
+    private List<ToggleFlagEventArgs> _toggleFlagEvents;
+
     [SetUp]
     public void SetUp()
     {
@@ -20,11 +22,51 @@ public class GameControllerTest
 
         _openCellEvents = new List<OpenCellEventArgs>();
         _gameController.OnOpenCell += GameControllerOnOpenCell;
+
+        _toggleFlagEvents = new List<ToggleFlagEventArgs>();
+        _gameController.OnToggleFlag += GameControllerOnToggleFlag;
     }
 
     private void GameControllerOnOpenCell(object sender, OpenCellEventArgs args)
     {
         _openCellEvents.Add(args);
+    }
+
+    private void GameControllerOnToggleFlag(object sender, ToggleFlagEventArgs args)
+    {
+        _toggleFlagEvents.Add(args);
+    }
+
+    [Test]
+    public void TestPlaceFlag()
+    {
+        _gameController.ToggleFlag(3, 2);
+
+        var expectedArgs = new ToggleFlagEventArgs(3, 2, FlagStatus.Flag);
+
+        Assert.AreEqual(1, _toggleFlagEvents.Count);
+        Assert.AreEqual(expectedArgs, _toggleFlagEvents[0]);
+    }
+
+    [Test]
+    public void TestRemoveFlag()
+    {
+        _gameController.ToggleFlag(3, 2);
+        _gameController.ToggleFlag(3, 2);
+
+        var expectedArgs = new ToggleFlagEventArgs(3, 2, FlagStatus.NoFlag);
+
+        Assert.AreEqual(2, _toggleFlagEvents.Count);
+        Assert.AreEqual(expectedArgs, _toggleFlagEvents[1]);
+    }
+
+    [Test]
+    public void TestCanNotPlaceFlag()
+    {
+        _gameController.OpenCell(2, 1);
+        _gameController.ToggleFlag(2, 1);
+
+        Assert.AreEqual(0, _toggleFlagEvents.Count);
     }
 
     [Test]

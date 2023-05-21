@@ -11,6 +11,8 @@ public class GameController
 
     public event EventHandler<OpenCellEventArgs> OnOpenCell;
 
+    public event EventHandler<ToggleFlagEventArgs> OnToggleFlag;
+
     public GameController(int mines, int width, int height, int seed = 0)
     {
         _fieldStatus = new FieldStatus[width, height];
@@ -41,6 +43,30 @@ public class GameController
                 _fieldMap[pos.X, pos.Y]++;
             }
         }
+    }
+
+    public void ToggleFlag(int x, int y)
+    {
+        FlagStatus flagStatus;
+        FieldStatus fieldStatus;
+        switch (_fieldStatus[x, y])
+        {
+            case FieldStatus.Opened:
+                return;
+            case FieldStatus.Closed:
+                flagStatus = FlagStatus.Flag;
+                fieldStatus = FieldStatus.Flag;
+                break;
+            case FieldStatus.Flag:
+                flagStatus = FlagStatus.NoFlag;
+                fieldStatus = FieldStatus.Closed;
+                break;
+            default:
+                throw new Exception("Unexpected field status");
+        }
+
+        _fieldStatus[x, y] = fieldStatus;
+        OnToggleFlag?.Invoke(this, new ToggleFlagEventArgs(x, y, flagStatus));
     }
 
     public void OpenCell(int x, int y)

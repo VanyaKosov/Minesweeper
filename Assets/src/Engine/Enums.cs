@@ -5,3 +5,8 @@
     Flag
 }
 
+public enum FlagStatus
+{
+    NoFlag,
+    Flag
+}

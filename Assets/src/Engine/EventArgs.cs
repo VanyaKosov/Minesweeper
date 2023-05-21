@@ -1,5 +1,35 @@
 ﻿using System;
 
+public class ToggleFlagEventArgs : EventArgs
+{
+    public Position Position;
+
+    public FlagStatus FlagStatus;
+
+    public ToggleFlagEventArgs(int x, int y, FlagStatus flagStatus)
+    {
+        Position = new Position(x, y);
+        FlagStatus = flagStatus;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (!(obj is ToggleFlagEventArgs))
+        {
+            return false;
+        }
+
+        var anotherObj = (ToggleFlagEventArgs)obj;
+
+        return anotherObj.Position.Equals(Position) && anotherObj.FlagStatus == FlagStatus;
+    }
+
+    public override int GetHashCode()
+    {
+        return Position.GetHashCode() + (int)FlagStatus;
+    }
+}
+
 public class OpenCellEventArgs : EventArgs
 {
     public Position Position;
@@ -21,14 +51,12 @@ public class OpenCellEventArgs : EventArgs
 
         var anotherObj = (OpenCellEventArgs)obj;
 
-        return anotherObj.Value == Value &&
-            anotherObj.Position.X == Position.X &&
-            anotherObj.Position.Y == Position.Y;
+        return anotherObj.Value == Value && anotherObj.Position.Equals(Position);
     }
 
     public override int GetHashCode()
     {
-        return (Position.X + 1) * (Position.Y + 3) - Value;
+        return Position.GetHashCode() * (Value + 5);
     }
 }
 
