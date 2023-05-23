@@ -5,6 +5,8 @@ public class GameController
 {
     private const int MINE = -1;
 
+    private int _flagsLeft;
+
     private readonly int[,] _fieldMap;
 
     private readonly FieldStatus[,] _fieldStatus;
@@ -15,6 +17,8 @@ public class GameController
 
     public GameController(int mines, int width, int height, int seed = 0)
     {
+        _flagsLeft = mines;
+
         _fieldStatus = new FieldStatus[width, height];
         _fieldMap = new int[width, height];
 
@@ -54,19 +58,25 @@ public class GameController
             case FieldStatus.Opened:
                 return;
             case FieldStatus.Closed:
+                if (_flagsLeft == 0)
+                {
+                    return;
+                }
                 flagStatus = FlagStatus.Flag;
                 fieldStatus = FieldStatus.Flag;
+                _flagsLeft--;
                 break;
             case FieldStatus.Flag:
                 flagStatus = FlagStatus.NoFlag;
                 fieldStatus = FieldStatus.Closed;
+                _flagsLeft++;
                 break;
             default:
                 throw new Exception("Unexpected field status");
         }
 
         _fieldStatus[x, y] = fieldStatus;
-        OnToggleFlag?.Invoke(this, new ToggleFlagEventArgs(x, y, flagStatus));
+        OnToggleFlag?.Invoke(this, new ToggleFlagEventArgs(x, y, flagStatus, _flagsLeft));
     }
 
     public void OpenCell(int x, int y)

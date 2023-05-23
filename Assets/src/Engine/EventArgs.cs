@@ -6,10 +6,13 @@ public class ToggleFlagEventArgs : EventArgs
 
     public FlagStatus FlagStatus;
 
-    public ToggleFlagEventArgs(int x, int y, FlagStatus flagStatus)
+    public int FlagsLeft;
+
+    public ToggleFlagEventArgs(int x, int y, FlagStatus flagStatus, int flagsLeft)
     {
         Position = new Position(x, y);
         FlagStatus = flagStatus;
+        FlagsLeft = flagsLeft;
     }
 
     public override bool Equals(object obj)
@@ -21,7 +24,9 @@ public class ToggleFlagEventArgs : EventArgs
 
         var anotherObj = (ToggleFlagEventArgs)obj;
 
-        return anotherObj.Position.Equals(Position) && anotherObj.FlagStatus == FlagStatus;
+        return anotherObj.Position.Equals(Position) &&
+            anotherObj.FlagStatus == FlagStatus &&
+            anotherObj.FlagsLeft == FlagsLeft;
     }
 
     public override int GetHashCode()

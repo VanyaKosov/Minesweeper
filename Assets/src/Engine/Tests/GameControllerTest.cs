@@ -38,11 +38,25 @@ public class GameControllerTest
     }
 
     [Test]
+    public void TestExceedFlagLimit()
+    {
+        _gameController.ToggleFlag(0, 0);
+        _gameController.ToggleFlag(1, 0);
+        _gameController.ToggleFlag(2, 0);
+        _gameController.ToggleFlag(3, 0);
+        _gameController.ToggleFlag(4, 0);
+        _gameController.ToggleFlag(0, 1);
+        _gameController.ToggleFlag(1, 1);
+
+        Assert.AreEqual(6, _toggleFlagEvents.Count);
+    }
+
+    [Test]
     public void TestPlaceFlag()
     {
         _gameController.ToggleFlag(3, 2);
 
-        var expectedArgs = new ToggleFlagEventArgs(3, 2, FlagStatus.Flag);
+        var expectedArgs = new ToggleFlagEventArgs(3, 2, FlagStatus.Flag, 5);
 
         Assert.AreEqual(1, _toggleFlagEvents.Count);
         Assert.AreEqual(expectedArgs, _toggleFlagEvents[0]);
@@ -54,7 +68,7 @@ public class GameControllerTest
         _gameController.ToggleFlag(3, 2);
         _gameController.ToggleFlag(3, 2);
 
-        var expectedArgs = new ToggleFlagEventArgs(3, 2, FlagStatus.NoFlag);
+        var expectedArgs = new ToggleFlagEventArgs(3, 2, FlagStatus.NoFlag, 6);
 
         Assert.AreEqual(2, _toggleFlagEvents.Count);
         Assert.AreEqual(expectedArgs, _toggleFlagEvents[1]);
