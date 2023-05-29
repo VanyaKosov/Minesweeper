@@ -65,3 +65,30 @@ public class OpenCellEventArgs : EventArgs
     }
 }
 
+public class PositionEventArgs : EventArgs
+{
+    public Position Position;
+
+    public PositionEventArgs(int x, int y)
+    {
+        Position.X = x;
+        Position.Y = y;
+    }
+
+    public override bool Equals(object obj)
+    {
+        if (!(obj is PositionEventArgs))
+        {
+            return false;
+        }
+
+        var anotherObj = (PositionEventArgs)obj;
+
+        return Position.Equals(anotherObj.Position);
+    }
+
+    public override int GetHashCode()
+    {
+        return Position.GetHashCode();
+    }
+}

@@ -11,7 +11,13 @@ public class GameControllerTest
 
     private GameController _gameController;
 
+    private List<PositionEventArgs> _looseEvents;
+
     private List<OpenCellEventArgs> _openCellEvents;
+
+    private List<PositionEventArgs> _wrongFlagEvents;
+
+    private List<PositionEventArgs> _closedMinesEvents;
 
     private List<ToggleFlagEventArgs> _toggleFlagEvents;
 
@@ -20,11 +26,25 @@ public class GameControllerTest
     {
         _gameController = new GameController(MINES, WIDTH, HEIGHT, 321);
 
+        _looseEvents = new List<PositionEventArgs>();
+        _gameController.OnLoose += GameControllerOnLoose;
+
+        _wrongFlagEvents = new List<PositionEventArgs>();
+        _gameController.OnWrongFlag += GameControllerOnWrongFlag;
+
         _openCellEvents = new List<OpenCellEventArgs>();
         _gameController.OnOpenCell += GameControllerOnOpenCell;
 
         _toggleFlagEvents = new List<ToggleFlagEventArgs>();
         _gameController.OnToggleFlag += GameControllerOnToggleFlag;
+
+        _closedMinesEvents = new List<PositionEventArgs>();
+        _gameController.OnClosedMines += GameControllerOnClosedMines;
+    }
+
+    private void GameControllerOnLoose(object sender, PositionEventArgs args)
+    {
+        _looseEvents.Add(args);
     }
 
     private void GameControllerOnOpenCell(object sender, OpenCellEventArgs args)
@@ -35,6 +55,58 @@ public class GameControllerTest
     private void GameControllerOnToggleFlag(object sender, ToggleFlagEventArgs args)
     {
         _toggleFlagEvents.Add(args);
+    }
+
+    private void GameControllerOnWrongFlag(object sender, PositionEventArgs args)
+    {
+        _wrongFlagEvents.Add(args);
+    }
+
+    private void GameControllerOnClosedMines(object sender, PositionEventArgs args)
+    {
+        _closedMinesEvents.Add(args);
+    }
+
+    [Test]
+    public void TestLooseClosedMines()
+    {
+        _gameController.ToggleFlag(1, 1);
+        _gameController.ToggleFlag(2, 1);
+        _gameController.ToggleFlag(3, 1);
+        _gameController.ToggleFlag(2, 2);
+        _gameController.ToggleFlag(2, 0);
+        _gameController.ToggleFlag(3, 0);
+
+        _gameController.OpenCell(3, 2);
+
+        Assert.AreEqual(2, _closedMinesEvents.Count);
+        Assert.AreEqual(new PositionEventArgs(0, 0), _closedMinesEvents[0]);
+        Assert.AreEqual(new PositionEventArgs(3, 2), _closedMinesEvents[1]);
+    }
+
+    [Test]
+    public void TestLooseWrongFlags()
+    {
+        _gameController.ToggleFlag(1, 1);
+        _gameController.ToggleFlag(2, 1);
+        _gameController.ToggleFlag(3, 1);
+        _gameController.ToggleFlag(2, 2);
+
+        _gameController.OpenCell(3, 2);
+
+        Assert.AreEqual(2, _wrongFlagEvents.Count);
+        Assert.AreEqual(new PositionEventArgs(2, 1), _wrongFlagEvents[0]);
+        Assert.AreEqual(new PositionEventArgs(2, 2), _wrongFlagEvents[1]);
+    }
+
+    [Test]
+    public void TestLoose()
+    {
+        _gameController.OpenCell(3, 2);
+
+        Assert.AreEqual(1, _looseEvents.Count);
+        Assert.AreEqual(new Position(3, 2), _looseEvents[0].Position);
+        Assert.AreEqual(0, _openCellEvents.Count);
     }
 
     [Test]
