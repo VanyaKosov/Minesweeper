@@ -5,6 +5,8 @@ public class GameController
 {
     private const int MINE = -1;
 
+    private int _cellsLeft;
+
     private int _flagsLeft;
 
     private bool _gameEnded = false;
@@ -12,6 +14,8 @@ public class GameController
     private readonly int[,] _fieldMap;
 
     private readonly FieldStatus[,] _fieldStatus;
+
+    public event EventHandler<EventArgs> OnWin;
 
     public event EventHandler<PositionEventArgs> OnLoose;
 
@@ -25,6 +29,8 @@ public class GameController
 
     public GameController(int mines, int width, int height, int seed = 0)
     {
+        _cellsLeft = width * height - mines;
+
         _flagsLeft = mines;
 
         _fieldStatus = new FieldStatus[width, height];
@@ -149,6 +155,14 @@ public class GameController
 
         var args = new OpenCellEventArgs(x, y, _fieldMap[x, y]);
         OnOpenCell?.Invoke(this, args);
+
+        _cellsLeft--;
+        if (_cellsLeft == 0)
+        {
+            OnWin?.Invoke(this, EventArgs.Empty);
+            _gameEnded = true;
+            return;
+        }
 
         if (_fieldMap[x, y] != 0)
         {

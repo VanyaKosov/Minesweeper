@@ -1,4 +1,5 @@
 ﻿using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 
 public class GameControllerTest
@@ -10,6 +11,8 @@ public class GameControllerTest
     private const int MINES = 6;
 
     private GameController _gameController;
+
+    private List<EventArgs> _winEvents;
 
     private List<PositionEventArgs> _looseEvents;
 
@@ -26,6 +29,9 @@ public class GameControllerTest
     {
         _gameController = new GameController(MINES, WIDTH, HEIGHT, 321);
 
+        _winEvents = new List<EventArgs>();
+        _gameController.OnWin += GameControllerOnWin;
+
         _looseEvents = new List<PositionEventArgs>();
         _gameController.OnLoose += GameControllerOnLoose;
 
@@ -40,6 +46,11 @@ public class GameControllerTest
 
         _closedMinesEvents = new List<PositionEventArgs>();
         _gameController.OnClosedMines += GameControllerOnClosedMines;
+    }
+
+    private void GameControllerOnWin(object sender, EventArgs args)
+    {
+        _winEvents.Add(args);
     }
 
     private void GameControllerOnLoose(object sender, PositionEventArgs args)
@@ -65,6 +76,27 @@ public class GameControllerTest
     private void GameControllerOnClosedMines(object sender, PositionEventArgs args)
     {
         _closedMinesEvents.Add(args);
+    }
+
+    [Test]
+    public void TestWin()
+    {
+        _gameController.ToggleFlag(0, 0);
+        _gameController.ToggleFlag(1, 1);
+        _gameController.ToggleFlag(2, 0);
+        _gameController.ToggleFlag(3, 0);
+        _gameController.ToggleFlag(3, 1);
+        _gameController.ToggleFlag(3, 2);
+
+        for (var x = 0; x < WIDTH; x++)
+        {
+            for (var y = 0; y < HEIGHT; y++)
+            {
+                _gameController.OpenCell(x, y);
+            }
+        }
+
+        Assert.AreEqual(1, _winEvents.Count);
     }
 
     [Test]
