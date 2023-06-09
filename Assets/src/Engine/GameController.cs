@@ -63,6 +63,22 @@ public class GameController
         }
     }
 
+    public int Width
+    {
+        get
+        {
+            return _fieldStatus.GetLength(0);
+        }
+    }
+
+    public int Height
+    {
+        get
+        {
+            return _fieldStatus.GetLength(1);
+        }
+    }
+
     private void CheckClosedMinesOnLoose()
     {
         foreach (var pos in AllFieldCells())
@@ -177,9 +193,9 @@ public class GameController
 
     private IEnumerable<Position> AllFieldCells()
     {
-        for (var x = 0; x < _fieldStatus.GetLength(0); x++)
+        for (var x = 0; x < Width; x++)
         {
-            for (var y = 0; y < _fieldStatus.GetLength(1); y++)
+            for (var y = 0; y < Height; y++)
             {
                 yield return new Position(x, y);
             }
