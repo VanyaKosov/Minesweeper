@@ -1,8 +1,11 @@
+using System;
 using UnityEngine;
 
 public class Game : MonoBehaviour
 {
     private GameController _controller;
+
+    private CellController[,] _cellControllers;
 
     public GameObject CellPrefab;
 
@@ -12,6 +15,8 @@ public class Game : MonoBehaviour
     {
         var settings = FindObjectOfType<Settings>();
         _controller = new GameController(settings.Mines, settings.Width, settings.Height);
+
+        _cellControllers = new CellController[settings.Width, settings.Height];
 
         GenerateField();
 
@@ -30,7 +35,16 @@ public class Game : MonoBehaviour
 
     private void controllerOnToggleFlag(object sender, ToggleFlagEventArgs e)
     {
-        throw new System.NotImplementedException();
+        var cell = _cellControllers[e.Position.X, e.Position.Y];
+
+        if (e.FlagStatus == FlagStatus.NoFlag)
+        {
+            cell.RemoveFlag();
+        }
+        else
+        {
+            cell.PlaceFlag();
+        }
     }
 
     private void controllerOnOpenCell(object sender, OpenCellEventArgs e)
@@ -71,6 +85,12 @@ public class Game : MonoBehaviour
                 var cell = Instantiate(CellPrefab, GameCanvas.transform);
                 var pos = new Vector2(xPos + x * cellSize, yPos + y * cellSize);
                 cell.GetComponent<RectTransform>().anchoredPosition = pos;
+
+                var cellController = cell.GetComponent<CellController>();
+                _cellControllers[x, y] = cellController;
+                var xc = x;
+                var yc = y;
+                cellController.OnToggleFlagClick += (sender, args) => _controller.ToggleFlag(xc, yc);
             }
         }
     }

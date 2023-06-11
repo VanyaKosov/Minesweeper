@@ -1,10 +1,11 @@
 ﻿using System;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
-public class CellController : MonoBehaviour
+public class CellController : MonoBehaviour, IPointerClickHandler
 {
-    public event EventHandler<EventArgs> OnClick;
+    public event EventHandler<EventArgs> OnToggleFlagClick;
 
     public Image SpriteImage;
 
@@ -20,13 +21,30 @@ public class CellController : MonoBehaviour
 
     public void Start()
     {
-        SpriteImage.sprite = Closed;
+        ChangeSprite(Closed);
     }
 
-    public void ClickHandler()
+    public void OnPointerClick(PointerEventData eventData)
     {
-        OnClick?.Invoke(this, EventArgs.Empty);
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            OnToggleFlagClick?.Invoke(this, EventArgs.Empty);
+        }
     }
 
+    private void ChangeSprite(Sprite sprite)
+    {
+        SpriteImage.sprite = sprite;
+    }
+
+    internal void PlaceFlag()
+    {
+        ChangeSprite(Flag);
+    }
+
+    internal void RemoveFlag()
+    {
+        ChangeSprite(Closed);
+    }
 
 }
