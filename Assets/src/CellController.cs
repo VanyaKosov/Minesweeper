@@ -7,6 +7,8 @@ public class CellController : MonoBehaviour, IPointerClickHandler
 {
     public event EventHandler<EventArgs> OnToggleFlagClick;
 
+    public event EventHandler<EventArgs> OnOpenCellClick;
+
     public Image SpriteImage;
 
     public Sprite Closed;
@@ -30,6 +32,10 @@ public class CellController : MonoBehaviour, IPointerClickHandler
         {
             OnToggleFlagClick?.Invoke(this, EventArgs.Empty);
         }
+        else if (eventData.button == PointerEventData.InputButton.Left)
+        {
+            OnOpenCellClick?.Invoke(this, EventArgs.Empty);
+        }
     }
 
     private void ChangeSprite(Sprite sprite)
@@ -47,4 +53,8 @@ public class CellController : MonoBehaviour, IPointerClickHandler
         ChangeSprite(Closed);
     }
 
+    internal void OpenCell(int value)
+    {
+        ChangeSprite(Values[value]);
+    }
 }

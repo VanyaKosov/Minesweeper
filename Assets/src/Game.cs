@@ -49,7 +49,9 @@ public class Game : MonoBehaviour
 
     private void controllerOnOpenCell(object sender, OpenCellEventArgs e)
     {
-        throw new System.NotImplementedException();
+        var cell = _cellControllers[e.Position.X, e.Position.Y];
+
+        cell.OpenCell(e.Value);
     }
 
     private void controlleOnClosedMines(object sender, PositionEventArgs e)
@@ -91,6 +93,8 @@ public class Game : MonoBehaviour
                 var xc = x;
                 var yc = y;
                 cellController.OnToggleFlagClick += (sender, args) => _controller.ToggleFlag(xc, yc);
+
+                cellController.OnOpenCellClick += (sender, args) => _controller.OpenCell(xc, yc);
             }
         }
     }

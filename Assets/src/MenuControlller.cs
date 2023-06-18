@@ -7,9 +7,9 @@ public class MenuControlller : MonoBehaviour
 
     public void SmallField()
     {
-        Settings.Width = 7;
-        Settings.Height = 5;
-        Settings.Mines = 6; // TODO remove
+        Settings.Width = 15;
+        Settings.Height = 10;
+        Settings.Mines = 20; // TODO remove
 
         SceneManager.LoadScene("Game");
     }
