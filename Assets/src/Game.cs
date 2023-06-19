@@ -30,7 +30,7 @@ public class Game : MonoBehaviour
 
     private void controllerOnWrongFlag(object sender, PositionEventArgs e)
     {
-        throw new System.NotImplementedException();
+        _cellControllers[e.Position.X, e.Position.Y].ShowWrongFlag();
     }
 
     private void controllerOnToggleFlag(object sender, ToggleFlagEventArgs e)
@@ -49,24 +49,17 @@ public class Game : MonoBehaviour
 
     private void controllerOnOpenCell(object sender, OpenCellEventArgs e)
     {
-        var cell = _cellControllers[e.Position.X, e.Position.Y];
-
-        cell.OpenCell(e.Value);
-    }
-
-    private void controlleOnClosedMines(object sender, PositionEventArgs e)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    private void controllerOnLoose(object sender, PositionEventArgs e)
-    {
-        throw new System.NotImplementedException();
+        _cellControllers[e.Position.X, e.Position.Y].OpenCell(e.Value);
     }
 
     private void controllerOnClosedMines(object sender, PositionEventArgs e)
     {
-        throw new System.NotImplementedException();
+        _cellControllers[e.Position.X, e.Position.Y].OpenMine();
+    }
+
+    private void controllerOnLoose(object sender, PositionEventArgs e)
+    {
+        _cellControllers[e.Position.X, e.Position.Y].ShowExplodedMine();
     }
 
     private void controllerOnWin(object sender, System.EventArgs e)

@@ -17,6 +17,8 @@ public class CellController : MonoBehaviour, IPointerClickHandler
 
     public Sprite Mine;
 
+    public Sprite FlagWrong;
+
     public Sprite MineExploded;
 
     public Sprite[] Values;
@@ -56,5 +58,20 @@ public class CellController : MonoBehaviour, IPointerClickHandler
     internal void OpenCell(int value)
     {
         ChangeSprite(Values[value]);
+    }
+
+    internal void OpenMine()
+    {
+        ChangeSprite(Mine);
+    }
+
+    internal void ShowWrongFlag()
+    {
+        ChangeSprite(FlagWrong);
+    }
+
+    internal void ShowExplodedMine()
+    {
+        ChangeSprite(MineExploded);
     }
 }

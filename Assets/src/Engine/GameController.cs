@@ -36,7 +36,7 @@ public class GameController
         _fieldStatus = new FieldStatus[width, height];
         _fieldMap = new int[width, height];
 
-        var random = new Random(seed);
+        var random = seed == 0 ? new Random() : new Random(seed);
 
         while (mines > 0)
         {
@@ -162,10 +162,10 @@ public class GameController
 
         if (_fieldMap[x, y] == MINE)
         {
+            _gameEnded = true;
             CheckFlagsOnLoose();
             CheckClosedMinesOnLoose();
             OnLoose?.Invoke(this, new PositionEventArgs(x, y));
-            _gameEnded = true;
             return;
         }
 
