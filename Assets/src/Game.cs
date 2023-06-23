@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 
 public class Game : MonoBehaviour
@@ -11,6 +12,8 @@ public class Game : MonoBehaviour
 
     public Canvas GameCanvas;
 
+    public TextMeshProUGUI FlagsLeft;
+
     private void Start()
     {
         var settings = FindObjectOfType<Settings>();
@@ -19,6 +22,8 @@ public class Game : MonoBehaviour
         _cellControllers = new CellController[settings.Width, settings.Height];
 
         GenerateField();
+
+        DisplayFlags(settings.Mines);
 
         _controller.OnWin += controllerOnWin;
         _controller.OnClosedMines += controllerOnClosedMines;
@@ -45,6 +50,7 @@ public class Game : MonoBehaviour
         {
             cell.PlaceFlag();
         }
+        DisplayFlags(e.FlagsLeft);
     }
 
     private void controllerOnOpenCell(object sender, OpenCellEventArgs e)
@@ -90,5 +96,10 @@ public class Game : MonoBehaviour
                 cellController.OnOpenCellClick += (sender, args) => _controller.OpenCell(xc, yc);
             }
         }
+    }
+
+    private void DisplayFlags(int value)
+    {
+        FlagsLeft.text = value.ToString();
     }
 }
