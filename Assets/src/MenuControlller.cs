@@ -1,18 +1,33 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MenuControlller : MonoBehaviour
 {
-    public Settings Settings;
+    private Settings _settings;
 
     public Slider Slider;
 
+    private void Start()
+    {
+        _settings = FindObjectOfType<Settings>();
+        if (_settings != null)
+        {
+            Slider.value = _settings.MinePersentage;
+            return;
+        }
+        var settingsObject = new GameObject();
+        settingsObject.name = "Settings";
+        _settings = (Settings)settingsObject.AddComponent(typeof(Settings));
+    }
+
     private void CreateGame(int width, int height)
     {
-        Settings.Width = width;
-        Settings.Height = height;
-        Settings.Mines = (int)(width * height * Slider.value);
+        _settings.Width = width;
+        _settings.Height = height;
+        _settings.Mines = (int)(width * height * Slider.value);
+        _settings.MinePersentage = Slider.value;
 
         SceneManager.LoadScene("Game");
     }

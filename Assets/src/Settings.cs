@@ -8,6 +8,8 @@ public class Settings : MonoBehaviour
 
     public int Height;
 
+    public float MinePersentage;
+
     void Start()
     {
         DontDestroyOnLoad(gameObject);
