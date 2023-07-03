@@ -79,6 +79,21 @@ public class GameControllerTest
     }
 
     [Test]
+    public void TestOpenCellsAround()
+    {
+        _gameController.ToggleFlag(0, 0);
+        _gameController.ToggleFlag(1, 1);
+        _gameController.OpenCell(0, 1);
+        _openCellEvents.Clear();
+        _gameController.OpenCell(0, 1);
+
+        Assert.AreEqual(3, _openCellEvents.Count);
+        Assert.AreEqual(new OpenCellEventArgs(1, 0, 3), _openCellEvents[1]);
+        Assert.AreEqual(new OpenCellEventArgs(0, 2, 1), _openCellEvents[0]);
+        Assert.AreEqual(new OpenCellEventArgs(1, 2, 1), _openCellEvents[2]);
+    }
+
+    [Test]
     public void TestWin()
     {
         _gameController.ToggleFlag(0, 0);

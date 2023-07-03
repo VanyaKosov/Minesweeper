@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public class GameController
 {
@@ -153,8 +154,14 @@ public class GameController
             return;
         }
 
+        if (_fieldStatus[x, y] == FieldStatus.Flag)
+        {
+            return;
+        }
+
         if (_fieldStatus[x, y] != FieldStatus.Closed)
         {
+            OpenCellsAround(x, y);
             return;
         }
 
@@ -188,6 +195,32 @@ public class GameController
         foreach (var pos in SurroundingCells(x, y))
         {
             OpenCell(pos.X, pos.Y);
+        }
+    }
+
+    private void OpenCellsAround(int x, int y)
+    {
+        var flagsAround = 0;
+
+        foreach (var pos in SurroundingCells(x, y))
+        {
+            if (_fieldStatus[pos.X, pos.Y] == FieldStatus.Flag)
+            {
+                flagsAround++;
+            }
+        }
+
+        if (flagsAround != _fieldMap[x, y])
+        {
+            return;
+        }
+
+        foreach (var pos in SurroundingCells(x, y))
+        {
+            if (_fieldStatus[pos.X, pos.Y] == FieldStatus.Closed)
+            {
+                OpenCell(pos.X, pos.Y);
+            }
         }
     }
 
