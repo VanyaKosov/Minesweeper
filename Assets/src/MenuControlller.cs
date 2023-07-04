@@ -44,6 +44,6 @@ public class MenuControlller : MonoBehaviour
 
     public void BigField()
     {
-        CreateGame(35, 25);
+        CreateGame(40, 23);
     }
 }
