@@ -14,6 +14,10 @@ public class Game : MonoBehaviour
 
     public TextMeshProUGUI FlagsLeft;
 
+    public GameObject Lost;
+
+    public GameObject Won;
+
     private void Start()
     {
         var settings = FindObjectOfType<Settings>();
@@ -66,11 +70,12 @@ public class Game : MonoBehaviour
     private void controllerOnLoose(object sender, PositionEventArgs e)
     {
         _cellControllers[e.Position.X, e.Position.Y].ShowExplodedMine();
+        Lost.SetActive(true);
     }
 
-    private void controllerOnWin(object sender, System.EventArgs e)
+    private void controllerOnWin(object sender, EventArgs e)
     {
-        throw new System.NotImplementedException();
+        Won.SetActive(true);
     }
 
     private void GenerateField()
